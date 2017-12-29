@@ -1,0 +1,87 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceRoot}",
+                "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\DHT-sensor-library-master",
+                "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\PubSubClient\\src",
+                "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\Timer-master",
+                "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\Adafruit_SSD1306-master",
+                "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\Adafruit-GFX-Library-master",
+                "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\SparkFun_Micro_OLED_Breakout\\src",
+                "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266",
+                "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\EEPROM",
+                "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\ESP8266WiFi\\src",
+                "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\ArduinoOTA",
+                "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\ESP8266WebServer\\src",
+                "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\ESP8266mDNS"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": false,
+                "path": [
+                    "${workspaceRoot}",
+                    "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\PubSubClient\\src",
+                    "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\Adafruit_SSD1306-master",
+                    "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\Timer-master",
+                    "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\Adafruit-GFX-Library-master",
+                    "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\SparkFun_Micro_OLED_Breakout\\src",
+                    "C:\\Users\\lukas\\Documents\\Arduino\\libraries\\DHT-sensor-library",
+                    "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266",
+                    "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\ESP8266WiFi\\src",
+                    "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\ESP8266WebServer\\src",
+                    "C:\\Users\\lukas\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries\\EEPROM"
+                ]
+            },
+            "intelliSenseMode": "msvc-x64"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceRoot}",
+                "/usr/include",
+                "/usr/local/include",
+                "/home/cellarstone/Arduino/libraries/cellarstone/eeprom",
+                "/home/cellarstone/Arduino/libraries/cellarstone/server",
+                "/home/cellarstone/Arduino/libraries/DHT-sensor-library-master",
+                "/home/cellarstone/Arduino/libraries/PubSubClient/src",
+                "/home/cellarstone/Arduino/libraries/Timer-master",
+                "/home/cellarstone/Arduino/libraries/Adafruit_SSD1306-master",
+                "/home/cellarstone/Arduino/libraries/Adafruit-GFX-Library-master",
+                "/home/cellarstone/Arduino/libraries/SparkFun_Micro_OLED_Breakout/src",
+                "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/cores/esp8266",
+                "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266WiFi/src",
+                "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ArduinoOTA",
+                "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266WebServer/src",
+                "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266mDNS",
+                "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/EEPROM",
+                "/home/cellarstone/Arduino/libraries/DHT_sensor_library",
+                "/usr/include/c++/5",
+                "/usr/include/linux",
+                "/usr/include/c++/5/parallel",
+                "/usr/include/x86_64-linux-gnu/c++/5"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": false,
+                "path": [
+                    "${workspaceRoot}",
+                    "/usr/include",
+                    "/usr/local/include",
+                    "/home/cellarstone/Arduino/libraries/PubSubClient/src",
+                    "/home/cellarstone/Arduino/libraries/Adafruit_SSD1306-master",
+                    "/home/cellarstone/Arduino/libraries/Timer-master",
+                    "/home/cellarstone/Arduino/libraries/Adafruit-GFX-Library-master",
+                    "/home/cellarstone/Arduino/libraries/SparkFun_Micro_OLED_Breakout/src",
+                    "/home/cellarstone/Arduino/libraries/DHT-sensor-library-master",
+                    "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/cores/esp8266",
+                    "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266WiFi/src",
+                    "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266WebServer/src",
+                    "/home/cellarstone/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/EEPROM",
+                    "/home/cellarstone/Arduino/libraries/DHT_sensor_library"
+                ]
+            },
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 3
+}
