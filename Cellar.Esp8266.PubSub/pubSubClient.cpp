@@ -1,6 +1,6 @@
 #include "cellar_pubsubclient.h"
 
-EepromStorage myeeprom;
+CellarEeprom pubsubEeprom;
 
 //nazev zarizeni - bude pouzito i pro pojmenovani zarizeni v siti a vychoziho access pointu
 string DeviceName = "x";
@@ -18,40 +18,77 @@ string MqttUserName = "test"; //test
 string MqttUserPass = "test"; //test
 
 //nazev MQTT fronty
-string MqttTopicName_temperature = DeviceName + "/temperature";
-string MqttTopicName_humidity = DeviceName + "/humidity";
-string MqttTopicName_pir = DeviceName + "/pir";
-string MqttTopicName_status = DeviceName + "/status";
-string MqttTopicName_ip = DeviceName + "/ip";
+string MqttTopicName_temperature = "/temperature";
+string MqttTopicName_humidity = "/humidity";
+string MqttTopicName_pir = "/pir";
+string MqttTopicName_status = "/status";
+string MqttTopicName_ip = "/ip";
 
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 Timer t;
 
+string Subscribe_Topic = "xxx";
+
+
+// void customCallback(char* topic, byte* payload, unsigned int length) {
+ 
+//   Serial.print("Message arrived in topic: ");
+//   Serial.println(topic);
+ 
+//   Serial.print("Message:");
+//   for (int i = 0; i < length; i++) {
+//     Serial.print((char)payload[i]);
+//   }
+ 
+//   Serial.println();
+//   Serial.println("-----------------------");
+ 
+// }
+
+
 //START
-void CellarPubSubClient::Start()
+void CellarPubSubClient::start()
 {
-    DeviceName = myeeprom.get_senzorid();
-    MqttHostName = myeeprom.get_mqttUrl();
+    //Serial.begin(115200);
 
-    Serial.println(DeviceName.c_str());
-    Serial.println(MqttHostName.c_str());
+    DeviceName = pubsubEeprom.get_senzorid();
+    MqttHostName = pubsubEeprom.get_mqttUrl();
 
-    Serial.println(WiFi.status());
+    MqttTopicName_temperature = DeviceName + "/temperature";
+    MqttTopicName_humidity = DeviceName + "/humidity";
+    MqttTopicName_pir = DeviceName + "/pir";
+    MqttTopicName_status = DeviceName + "/status";
+    MqttTopicName_ip = DeviceName + "/ip";
 
     mqttClient.setServer(MqttHostName.c_str(), MqttPort);
+    mqttClient.setCallback(customCallback);
+    reconnect();
 
     //casovane akce
     t.every(60000, send_Status);
 }
 
-void CellarPubSubClient::UpdateTimer()
+void CellarPubSubClient::updateTimer()
 {
     //update timer
     t.update();
+
+    mqttClient.loop();
 }
 
-void Reconnect()
+
+void CellarPubSubClient::set_Callback(CUSTOM_MQTT_CALLBACK_SIGNATURE){
+    this->customCallback = customCallback;
+}
+
+void CellarPubSubClient::set_Subscribe(string topic){
+    Subscribe_Topic = topic;
+}
+
+
+
+void reconnect()
 {
     if (!mqttClient.connected())
     {
@@ -60,6 +97,8 @@ void Reconnect()
         if (mqttClient.connect(DeviceName.c_str(), MqttUserName.c_str(), MqttUserPass.c_str()))
         {
             Serial.println("connected");
+
+            mqttClient.subscribe(Subscribe_Topic.c_str());
         }
         else
         {
@@ -67,14 +106,14 @@ void Reconnect()
             Serial.println(mqttClient.state());
             // Serial.println(" try again in 5 seconds");
 
-            Serial.println(MqttHostName.c_str());
-            Serial.println(MqttPort);
-            Serial.println(MqttTopicName_temperature.c_str());
-            Serial.println(MqttTopicName_humidity.c_str());
-            Serial.println(MqttTopicName_status.c_str());
-            Serial.println(MqttTopicName_ip.c_str());
-            Serial.println(MqttUserName.c_str());
-            Serial.println(MqttUserPass.c_str());
+            // Serial.println(MqttHostName.c_str());
+            // Serial.println(MqttPort);
+            // Serial.println(MqttTopicName_temperature.c_str());
+            // Serial.println(MqttTopicName_humidity.c_str());
+            // Serial.println(MqttTopicName_status.c_str());
+            // Serial.println(MqttTopicName_ip.c_str());
+            // Serial.println(MqttUserName.c_str());
+            // Serial.println(MqttUserPass.c_str());
 
             // Wait 5 seconds before retrying
             //delay(5000);
@@ -83,27 +122,28 @@ void Reconnect()
 }
 
 //************************************************************
-long randNumber;
 void send_Status()
 {
     if (!mqttClient.connected())
     {
-        Reconnect();
+        reconnect();
     }
     //mqttClient.loop();
 
-    randNumber = random(0, 10);
-    Serial.println(String(randNumber).c_str());
-
-    //Get actual IP address
+    long randNumber = random(0, 10);
     String ip = WiFi.localIP().toString();
+    
+    Serial.println("-------------------- STATUS -------------------");
+    Serial.print("Status random number : ");
+    Serial.println(String(randNumber).c_str());
+    Serial.print("Status IP address : ");
     Serial.println(ip.c_str());
+    Serial.println("-----------------------------------------------");
 
     if (mqttClient.connected())
     {
         mqttClient.publish(MqttTopicName_status.c_str(), String(randNumber).c_str(), true);
         mqttClient.publish(MqttTopicName_ip.c_str(), ip.c_str(), true);
-        Serial.println("STATUS OK");
     }
     else
     {
@@ -116,7 +156,7 @@ void CellarPubSubClient::send_Temperature(string value)
 {
     if (!mqttClient.connected())
     {
-        Reconnect();
+        reconnect();
     }
 
     if (mqttClient.connected())
@@ -133,7 +173,7 @@ void CellarPubSubClient::send_Humidity(string value)
 {
     if (!mqttClient.connected())
     {
-        Reconnect();
+        reconnect();
     }
 
     if (mqttClient.connected())
@@ -150,7 +190,7 @@ void CellarPubSubClient::send_Pir(string value)
 {
     if (!mqttClient.connected())
     {
-        Reconnect();
+        reconnect();
     }
 
     if (mqttClient.connected())

@@ -19,20 +19,36 @@
 
 using namespace std;
 
+
+
+#ifdef ESP8266
+#include <functional>
+#define CUSTOM_MQTT_CALLBACK_SIGNATURE std::function<void(char*, uint8_t*, unsigned int)> customCallback
+#else
+#define CUSTOM_MQTT_CALLBACK_SIGNATURE void (*customCallback)(char*, uint8_t*, unsigned int)
+#endif
+
+
 //PubSub client
 class CellarPubSubClient
 {
-  public:
-    void Start();
-    void UpdateTimer();
-    
-    void send_Temperature(string value);
-    void send_Humidity(string value);
-    void send_Pir(string value);
+private:
+  CUSTOM_MQTT_CALLBACK_SIGNATURE;
 
+public:
+  void start();
+  void updateTimer();
+
+  void send_Temperature(string value);
+  void send_Humidity(string value);
+  void send_Pir(string value);
+
+  void set_Callback(CUSTOM_MQTT_CALLBACK_SIGNATURE);
+  void set_Subscribe(string topic);
 };
 
-void Reconnect();
+//void mycallback(char* topic, byte* payload, unsigned int length);
+void reconnect();
 void send_Status();
 
 #endif

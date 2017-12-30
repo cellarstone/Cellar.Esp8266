@@ -18,8 +18,12 @@ const int size_wifipsswd = 32;
 const int address_mqttUrl = 106;
 const int size_mqttUrl = 32;
 
+//FIRMWARE VERSION
+const int address_firmware = 138;
+const int size_firmware = 32;
 
-void EepromStorage::clear()
+
+void CellarEeprom::clear()
 {
     EEPROM.begin(512);
     myeepromutil.eeprom_erase_all();
@@ -27,7 +31,7 @@ void EepromStorage::clear()
 }
 
 
-void EepromStorage::save_senzorid(string id)
+void CellarEeprom::save_senzorid(string id)
 {
     EEPROM.begin(512);
     char* temp = (char*)id.c_str();
@@ -36,7 +40,7 @@ void EepromStorage::save_senzorid(string id)
     EEPROM.end();
 }
 
-void EepromStorage::save_wifissid(string ssid)
+void CellarEeprom::save_wifissid(string ssid)
 {
     EEPROM.begin(512);
     char* temp = (char*)ssid.c_str();
@@ -45,7 +49,7 @@ void EepromStorage::save_wifissid(string ssid)
     EEPROM.end();
 }
 
-void EepromStorage::save_wifipsswd(string password)
+void CellarEeprom::save_wifipsswd(string password)
 {
     EEPROM.begin(512);
     char* temp = (char*)password.c_str();
@@ -54,7 +58,7 @@ void EepromStorage::save_wifipsswd(string password)
     EEPROM.end();
 }
 
-void EepromStorage::save_mqttUrl(string url)
+void CellarEeprom::save_mqttUrl(string url)
 {
     EEPROM.begin(512);
     char* temp = (char*)url.c_str();
@@ -63,7 +67,16 @@ void EepromStorage::save_mqttUrl(string url)
     EEPROM.end();
 }
 
-string EepromStorage::get_senzorid()
+void CellarEeprom::save_firmware(string version)
+{
+    EEPROM.begin(512);
+    char* temp = (char*)version.c_str();
+    myeepromutil.eeprom_write_string(address_firmware, temp);
+    EEPROM.commit();
+    EEPROM.end();
+}
+
+string CellarEeprom::get_senzorid()
 {
     EEPROM.begin(512);
     char *temp = "x";
@@ -75,7 +88,7 @@ string EepromStorage::get_senzorid()
     return string(temp);
 }
 
-string EepromStorage::get_wifissid()
+string CellarEeprom::get_wifissid()
 {
     EEPROM.begin(512);
     char *temp = "x";
@@ -87,7 +100,7 @@ string EepromStorage::get_wifissid()
     return string(temp);
 }
 
-string EepromStorage::get_wifipsswd()
+string CellarEeprom::get_wifipsswd()
 {
     EEPROM.begin(512);
     char *temp = "x";
@@ -99,11 +112,23 @@ string EepromStorage::get_wifipsswd()
     return string(temp);
 }
 
-string EepromStorage::get_mqttUrl()
+string CellarEeprom::get_mqttUrl()
 {
     EEPROM.begin(512);
     char *temp = "x";
     myeepromutil.eeprom_read_string(address_mqttUrl, temp, size_mqttUrl);
+    EEPROM.end();
+
+    //Serial.println(temp);
+
+    return string(temp);
+}
+
+string CellarEeprom::get_firmware()
+{
+    EEPROM.begin(512);
+    char *temp = "x";
+    myeepromutil.eeprom_read_string(address_firmware, temp, size_firmware);
     EEPROM.end();
 
     //Serial.println(temp);

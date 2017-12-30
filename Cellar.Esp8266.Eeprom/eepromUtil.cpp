@@ -12,15 +12,20 @@
 // These values can be changed e.g. to protect
 // eeprom cells outside this range.
 //
-const int EEPROM_MIN_ADDR = 0;
-const int EEPROM_MAX_ADDR = 1023;
+const int EEPROM_MIN_ADDR = 10;
+const int EEPROM_MAX_ADDR = 170;
+const int EEPROM_ITEM_SIZE = 32;
 
 
 void EepromUtil::eeprom_erase_all() {
   char b = 0xff;
   int i;
 
-  for (i = EEPROM_MIN_ADDR; i <= EEPROM_MAX_ADDR; i++) {
+  //erase everything except FIRMWARE VERSION !!
+  //FIRMWARE version is last item
+  int maxAddr = EEPROM_MAX_ADDR - EEPROM_ITEM_SIZE;
+
+  for (i = EEPROM_MIN_ADDR; i < maxAddr; i++) {
     EEPROM.write(i, b);
   }
 }

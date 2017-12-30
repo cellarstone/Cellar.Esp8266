@@ -10,9 +10,10 @@ ESP8266WebServer server(80);
 HomePage temphomepage;
 SettingsPage tempsettingspage;
 
-EepromStorage myeeprom;
+CellarEeprom serverEeprom;
 
 //INPUTS
+string firmware = "x";
 string senzorid = "x";
 string wifissid = "x";
 string wifipsswd = "x";
@@ -21,24 +22,37 @@ string mqtturl = "x";
 //START
 void CellarServer::start()
 {
-    senzorid = myeeprom.get_senzorid();
-    wifissid = myeeprom.get_wifissid();
-    wifipsswd = myeeprom.get_wifipsswd();
-    mqtturl = myeeprom.get_mqttUrl();
+    Serial.begin(115200);
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
 
-    Serial.println(senzorid.c_str());
-    Serial.println(wifissid.c_str());
-    Serial.println(wifipsswd.c_str());
-    Serial.println(mqtturl.c_str());
+    firmware = serverEeprom.get_firmware();
+    senzorid = serverEeprom.get_senzorid();
+    wifissid = serverEeprom.get_wifissid();
+    wifipsswd = serverEeprom.get_wifipsswd();
+    mqtturl = serverEeprom.get_mqttUrl();
+
+    log_Parameters("START");
 
     //TEST Wifi
     WiFi.disconnect();
     setupSTA(wifissid, wifipsswd);
 
     int ret;
+    int tmp1 = LOW;
     uint8_t timeout = 20; // 20 * 500 ms = 5 sec time out
     while (((ret = WiFi.status()) != WL_CONNECTED) && timeout)
     {
+        if (tmp1 == LOW)
+        {
+            tmp1 = HIGH;
+        }
+        else
+        {
+            tmp1 = LOW;
+        }
+        digitalWrite(LED_BUILTIN, tmp1);
+
         Serial.print(".");
         Serial.print(WiFi.status());
         delay(500);
@@ -48,14 +62,18 @@ void CellarServer::start()
     // connected ?
     if ((ret = WiFi.status()) == WL_CONNECTED)
     {
-        Serial.print(WiFi.status());
+        Serial.println(WiFi.status());
 
         //NORMAL WEB SERVER
-        Serial.println("");
+        Serial.println("------------- WIFI CONNECTED --------------");
         Serial.print("Connected to ");
         Serial.println(wifissid.c_str());
         Serial.print("IP address: ");
         Serial.println(WiFi.localIP());
+        Serial.println("-------------------------------------------");
+
+        //LED will be off
+        digitalWrite(LED_BUILTIN, HIGH);
     }
     // not connected ? start AP
     else
@@ -63,13 +81,17 @@ void CellarServer::start()
         //WEB SERVER in AP MODE
         setupAP();
 
-        Serial.println("");
+        Serial.println("------------- AP MODE --------------");
         Serial.print("AP Mode SSID : ");
         Serial.println("Cellarstone ESP8266 Wifi");
         Serial.print("AP Mode Password : ");
         Serial.println("Cllrs123IoT456");
         Serial.print("IP address: ");
         Serial.println(WiFi.softAPIP());
+        Serial.println("------------------------------------");
+
+        //LED will be on
+        digitalWrite(LED_BUILTIN, LOW);
     }
 
     // Set up the endpoints for HTTP server
@@ -84,7 +106,9 @@ void CellarServer::start()
 
     // Start the server
     server.begin();
+    Serial.println("------------- HTTP SERVER --------------");
     Serial.println("HTTP server started");
+    Serial.println("----------------------------------------");
 }
 
 //HANDLE
@@ -101,11 +125,7 @@ void CellarServer::setupSTA(string wifissid, string wifipsswd)
 {
     WiFi.mode(WIFI_STA);
     WiFi.begin(wifissid.c_str(), wifipsswd.c_str());
-
-    Serial.println(wifissid.c_str());
-    Serial.println(wifipsswd.c_str());
 }
-
 
 void CellarServer::setupAP()
 {
@@ -123,29 +143,21 @@ void handle_homepage()
 {
     string temphome = "x";
 
-    senzorid = myeeprom.get_senzorid();
-    wifissid = myeeprom.get_wifissid();
-    wifipsswd = myeeprom.get_wifipsswd();
-    mqtturl = myeeprom.get_mqttUrl();
+    firmware = serverEeprom.get_firmware();
+    senzorid = serverEeprom.get_senzorid();
+    wifissid = serverEeprom.get_wifissid();
+    wifipsswd = serverEeprom.get_wifipsswd();
+    mqtturl = serverEeprom.get_mqttUrl();
 
-    Serial.println(senzorid.c_str());
-    Serial.println(wifissid.c_str());
-    Serial.println(wifipsswd.c_str());
-    Serial.println(mqtturl.c_str());
-    Serial.println("---------------------------------");
+    log_Parameters("HOME");
 
     temphome = temphomepage.getHTML();
 
-
-    Serial.println(temphome.c_str());
-
-
+    replace(temphome, "{{firmware}}", firmware);
     replace(temphome, "{{senzorid}}", senzorid);
     replace(temphome, "{{wifissid}}", wifissid);
     replace(temphome, "{{wifipsswd}}", wifipsswd);
     replace(temphome, "{{mqtturl}}", mqtturl);
-
-    //Serial.println(temphome.c_str());
 
     server.send(200, "text/html", temphome.c_str());
 }
@@ -153,6 +165,7 @@ void handle_homepage()
 void handle_settingspage()
 {
     std::string temp = tempsettingspage.getHTML();
+    replace(temp, "{{firmware}}", firmware);
     replace(temp, "{{senzorid}}", senzorid);
     replace(temp, "{{wifissid}}", wifissid);
     replace(temp, "{{wifipsswd}}", wifipsswd);
@@ -185,39 +198,17 @@ void handle_submitpage()
             }
         }
 
-        Serial.println(senzorid.c_str());
-        Serial.println(wifissid.c_str());
-        Serial.println(wifipsswd.c_str());
-        Serial.println(mqtturl.c_str());
+        log_Parameters("SUBMIT");
     }
-    //************************************
-    //convert from std::string to char*
-    //************************************
-
-    // //CLEAR EEPROM
-    // myeeprom.eeprom_erase_all();
-
-    // //WRITE STRING
-    // myeeprom.eeprom_write_string(0, convert(senzorid));
-    // myeeprom.eeprom_write_string(100, convert(wifissid));
-    // myeeprom.eeprom_write_string(200, convert(wifipsswd));
-    // myeeprom.eeprom_write_string(300, convert(mqtturl));
-
-    // string result = temphomepage.getHTML();
-    // replace(result, "{{senzorid}}", senzorid);
-    // replace(result, "{{wifissid}}", wifissid);
-    // replace(result, "{{wifipsswd}}", wifipsswd);
-    // replace(result, "{{mqtturl}}", mqtturl);
-    // server.send(200, "text/html", result.c_str());
 
     //CLEAR EEPROM
-    myeeprom.clear();
+    serverEeprom.clear();
 
     //SAVE TO EEPROM
-    myeeprom.save_senzorid(senzorid);
-    myeeprom.save_wifissid(wifissid);
-    myeeprom.save_wifipsswd(wifipsswd);
-    myeeprom.save_mqttUrl(mqtturl);
+    serverEeprom.save_senzorid(senzorid);
+    serverEeprom.save_wifissid(wifissid);
+    serverEeprom.save_wifipsswd(wifipsswd);
+    serverEeprom.save_mqttUrl(mqtturl);
 
     server.sendHeader("Location", String("/"), true);
     server.send(302, "text/plain", "");
@@ -225,12 +216,12 @@ void handle_submitpage()
 
 void handle_restart()
 {
-    ESP.restart(); 
+    ESP.restart();
 }
 
 void handle_cleareeprom()
 {
-    myeeprom.clear();
+    serverEeprom.clear();
 
     server.sendHeader("Location", String("/"), true);
     server.send(302, "text/plain", "");
@@ -248,9 +239,30 @@ bool replace(std::string &str, const std::string &from, const std::string &to)
     return true;
 }
 
-// char *convert(std::string value)
-// {
-//     vector<char> tempData(value.c_str(), value.c_str() + value.size() + 1);
-//     char *tempData2 = &tempData[0];
-//     return tempData2;
-// }
+void log_Parameters(string method)
+{
+    Serial.print("--------------");
+    Serial.print(method.c_str());
+    Serial.println("-------------------");
+    Serial.print("Firmware : ");
+    Serial.print("|");
+    Serial.print(firmware.c_str());
+    Serial.println("|");
+    Serial.print("SenzorID : ");
+    Serial.print("|");
+    Serial.print(senzorid.c_str());
+    Serial.println("|");
+    Serial.print("Wifi SSID : ");
+    Serial.print("|");
+    Serial.print(wifissid.c_str());
+    Serial.println("|");
+    Serial.print("Wifi Password : ");
+    Serial.print("|");
+    Serial.print(wifipsswd.c_str());
+    Serial.println("|");
+    Serial.print("MQTT Url : ");
+    Serial.print("|");
+    Serial.print(mqtturl.c_str());
+    Serial.println("|");
+    Serial.println("---------------------------------");
+}

@@ -14,17 +14,19 @@
 using namespace std;
 
 
-class EepromStorage{
+class CellarEeprom{
   public:
     void clear();
     void save_senzorid(string id);
     void save_wifissid(string ssid);
     void save_wifipsswd(string password);
     void save_mqttUrl(string url);
+    void save_firmware(string version);
     string get_senzorid();
     string get_wifissid();
     string get_wifipsswd();
     string get_mqttUrl();
+    string get_firmware();
 };
 
 class EepromUtil {

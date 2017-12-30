@@ -28,7 +28,7 @@ bool replace(string &str,
              const string &from,
              const string &to);
 
-char *convert(string value);
+void log_Parameters(string method);
 
 //SERVER
 class CellarServer
