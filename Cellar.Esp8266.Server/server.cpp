@@ -19,6 +19,8 @@ string wifissid = "x";
 string wifipsswd = "x";
 string mqtturl = "x";
 
+bool IS_AP_MODE = false;
+
 //START
 void CellarServer::start()
 {
@@ -74,6 +76,8 @@ void CellarServer::start()
 
         //LED will be off
         digitalWrite(LED_BUILTIN, HIGH);
+
+        IS_AP_MODE = false;
     }
     // not connected ? start AP
     else
@@ -92,6 +96,8 @@ void CellarServer::start()
 
         //LED will be on
         digitalWrite(LED_BUILTIN, LOW);
+
+        IS_AP_MODE = true;
     }
 
     // Set up the endpoints for HTTP server

@@ -50,6 +50,6 @@ public:
 
 //void mycallback(char* topic, byte* payload, unsigned int length);
 void reconnect();
-void send_Status();
+void send_IP();
 
 #endif

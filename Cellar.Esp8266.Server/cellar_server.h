@@ -34,6 +34,7 @@ void log_Parameters(string method);
 class CellarServer
 {
 public:
+  bool IS_AP_MODE;
   void start();
   void handle();
 
