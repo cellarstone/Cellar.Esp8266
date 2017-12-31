@@ -12,7 +12,7 @@
 #include <PubSubClient.h>
 #include <Timer.h>
 #include <string>
-#include <vector>
+#include <list>
 
 //Cellar External libraries
 #include <cellar_eeprom.h>
@@ -42,9 +42,10 @@ public:
   void send_Temperature(string value);
   void send_Humidity(string value);
   void send_Pir(string value);
+  void send_Relay(string value);
 
   void set_Callback(CUSTOM_MQTT_CALLBACK_SIGNATURE);
-  void set_Subscribe(string topic);
+  void add_Subscribe(string topic);
 };
 
 //void mycallback(char* topic, byte* payload, unsigned int length);
