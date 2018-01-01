@@ -9,11 +9,13 @@
 
 //External libraries
 #include <string>
+#include <random>
 
 using namespace std;
 
 string int_to_string(int value);
 string float_to_string(float value);
 void find_and_replace(string &source, string const &find, string const &replace);
+string generate_random_string(int max_length);
 
 #endif

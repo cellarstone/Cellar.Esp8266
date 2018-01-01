@@ -11,10 +11,10 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <string>
-#include <vector>
 
 //Cellar External libraries
 #include <cellar_eeprom.h>
+#include <cellar_helper.h>
 
 using namespace std;
 

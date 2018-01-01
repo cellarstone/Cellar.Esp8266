@@ -130,6 +130,15 @@ void CellarServer::handle()
 void CellarServer::setupSTA(string wifissid, string wifipsswd)
 {
     WiFi.mode(WIFI_STA);
+
+    string ranomString = generate_random_string(7);
+
+    string hostname = "CELLAR_ESP8266_" + ranomString;
+
+
+    //WiFi.hostname("Name");
+
+
     WiFi.begin(wifissid.c_str(), wifipsswd.c_str());
 }
 
